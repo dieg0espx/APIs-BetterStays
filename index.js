@@ -188,7 +188,7 @@ app.post('/api/newReservation', async (req, res) => {
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
-      authorization: 'Bearer ' + token.token
+      authorization: 'Bearer ' + token
     },
     body: JSON.stringify({
       guest: {firstName: name , lastName, phone: phone, email: email},
@@ -204,14 +204,16 @@ app.post('/api/newReservation', async (req, res) => {
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
-      authorization: 'Bearer ' + token.token
+      authorization: 'Bearer ' + token
     },
     body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
   };
 
   fetch('https://open-api.guesty.com/v1/reservations', options)
       .then(response => response.json())
-      .then(response => fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2))
+      .then(response => {
+        fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
+      })
       .catch(err => console.error(err));
 });
 
