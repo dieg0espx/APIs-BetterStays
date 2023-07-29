@@ -45,9 +45,9 @@ async function getCurrentToken(){
           const todayte = dateFormatted(new Date());
 
           if(date !== todayte){
-            return getNewToken().access_token; 
+            return getNewToken(); 
           }
-          return {token:token, date:date};
+          return token
         }
     } catch (error) {
       return "Internal server Error";
@@ -71,7 +71,7 @@ async function getNewToken(){
           body: requestData
         })
         .then(response => response.json())
-        .then(response => updateToken(response))
+        .then(response => updateToken(response.access_token))
     } catch (error) {
         return console.log(error);
     }
@@ -85,7 +85,7 @@ async function updateToken(newToken){
 // Define a sample route
 app.get('/api/getCurrentToken', async (req, res) => {
     const token = await getCurrentToken();
-    res.json(token.token);
+    res.json(token);
 });
 app.get('/api/getProperties', async (req, res) => {
     const token = await getCurrentToken();
@@ -94,7 +94,7 @@ app.get('/api/getProperties', async (req, res) => {
       headers: {
         accept: 'application/json',
         timeout: '50000',
-        authorization: 'Bearer ' + token.token
+        authorization: 'Bearer ' + token
       }
     };
     fetch('https://open-api.guesty.com/v1/listings', options)
@@ -115,7 +115,7 @@ app.post('/api/getCalendar', async (req, res) => {
       headers: {
         accept: 'application/json',
         timeout: '50000',
-        authorization: 'Bearer ' + token.token
+        authorization: 'Bearer ' + token
       }
     };
     fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings/'+ propertyID +'?startDate=' + todayte + '&endDate=' + nextYear, options)
@@ -131,7 +131,7 @@ app.post('/api/getLastAvailability', async (req, res) => {
     headers: {
       accept: 'application/json',
       timeout: '50000',
-      authorization: 'Bearer ' + token.token
+      authorization: 'Bearer ' + token
     }
   };
   fetch("https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings/" + propertyID + "?startDate=" + checkIn + "&endDate=" + checkOut, options)
@@ -145,7 +145,7 @@ app.get('/api/getReservations', async (req, res) => {
     headers: {
       accept: 'application/json',
       timeout: '50000',
-      authorization: 'Bearer ' + token.token
+      authorization: 'Bearer ' + token
     }
   };
     fetch('https://open-api.guesty.com/v1/reservations?sort=checkIn&limit=100', options)
@@ -160,7 +160,7 @@ app.post('/api/getTaxes', async (req, res) => {
     headers: {
       accept: 'application/json',
       timeout: '50000',
-      authorization: 'Bearer ' + token.token
+      authorization: 'Bearer ' + token
     }
   };
   fetch('https://open-api.guesty.com/v1/taxes/unit-type/' + propertyID +'/actual', options)
@@ -168,39 +168,41 @@ app.post('/api/getTaxes', async (req, res) => {
     .then(response=> res.json(response))
 });
 app.post('/api/newReservation', async (req, res) => {
-  const token = await getCurrentToken();
-  const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
-  const options = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      authorization: 'Bearer ' + token.token
-    },
-    body: JSON.stringify({
-      guest: {firstName: name , lastName, phone: phone, email: email},
-      listingId: propertyID,
-      checkInDateLocalized: checkIn,
-      checkOutDateLocalized: checkOut,
-      status: 'confirmed'
-    })
-  };
+  res.json('Hello')
+  // const token = await getCurrentToken();
+  // const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
-  const options2 = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      authorization: 'Bearer ' + token.token
-    },
-    body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
-  };
+  // const options = {
+  //   method: 'POST',
+  //   headers: {
+  //     accept: 'application/json',
+  //     'content-type': 'application/json',
+  //     authorization: 'Bearer ' + token.token
+  //   },
+  //   body: JSON.stringify({
+  //     guest: {firstName: name , lastName, phone: phone, email: email},
+  //     listingId: propertyID,
+  //     checkInDateLocalized: checkIn,
+  //     checkOutDateLocalized: checkOut,
+  //     status: 'confirmed'
+  //   })
+  // };
 
-  fetch('https://open-api.guesty.com/v1/reservations', options)
-      .then(response => response.json())
-      .then(response => fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2))
-      .catch(err => console.error(err));
+  // const options2 = {
+  //   method: 'POST',
+  //   headers: {
+  //     accept: 'application/json',
+  //     'content-type': 'application/json',
+  //     authorization: 'Bearer ' + token.token
+  //   },
+  //   body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
+  // };
+
+  // fetch('https://open-api.guesty.com/v1/reservations', options)
+  //     .then(response => response.json())
+  //     .then(response => fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2))
+  //     .catch(err => console.error(err));
 });
 
 
