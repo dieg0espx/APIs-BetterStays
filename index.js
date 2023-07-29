@@ -177,42 +177,42 @@ app.post('/api/getTaxes', async (req, res) => {
     .then(response => response.json())
     .then(response=> res.json(response))
 });
+
 app.post('/api/newReservation', async (req, res) => {
+  const token = await getCurrentToken();
 
-  res.json('Hello')
-  // const token = await getCurrentToken();
-  // const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
+  const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
-  // const options = {
-  //   method: 'POST',
-  //   headers: {
-  //     accept: 'application/json',
-  //     'content-type': 'application/json',
-  //     authorization: 'Bearer ' + token.token
-  //   },
-  //   body: JSON.stringify({
-  //     guest: {firstName: name , lastName, phone: phone, email: email},
-  //     listingId: propertyID,
-  //     checkInDateLocalized: checkIn,
-  //     checkOutDateLocalized: checkOut,
-  //     status: 'confirmed'
-  //   })
-  // };
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      authorization: 'Bearer ' + token.token
+    },
+    body: JSON.stringify({
+      guest: {firstName: name , lastName, phone: phone, email: email},
+      listingId: propertyID,
+      checkInDateLocalized: checkIn,
+      checkOutDateLocalized: checkOut,
+      status: 'confirmed'
+    })
+  };
 
-  // const options2 = {
-  //   method: 'POST',
-  //   headers: {
-  //     accept: 'application/json',
-  //     'content-type': 'application/json',
-  //     authorization: 'Bearer ' + token.token
-  //   },
-  //   body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
-  // };
+  const options2 = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      authorization: 'Bearer ' + token.token
+    },
+    body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
+  };
 
-  // fetch('https://open-api.guesty.com/v1/reservations', options)
-  //     .then(response => response.json())
-  //     .then(response => fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2))
-  //     .catch(err => console.error(err));
+  fetch('https://open-api.guesty.com/v1/reservations', options)
+      .then(response => response.json())
+      .then(response => fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2))
+      .catch(err => console.error(err));
 });
 
 
