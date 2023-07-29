@@ -69,8 +69,9 @@ async function getNewToken(){
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: requestData
-        })
+        }).access_token
         .then(response => response.json())
+
         .then(response => updateToken(response.access_token))
     } catch (error) {
         return console.log(error);
