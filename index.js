@@ -55,31 +55,40 @@ async function getCurrentToken(){
 }
 
 async function getNewToken(){
-    const requestData = new URLSearchParams({
-      grant_type: 'client_credentials',
-      scope: 'open-api',
-      client_secret: 'ee6I4lQIVV6NqRDXqNigxJo3fZd9LAchKTfNWgllcYVo0XqfMyBbC9APPwafXz8B',
-      client_id: '0oaak3wjbzeKb5OTm5d7'
-    });
-    try {
-        return fetch('https://open-api.guesty.com/oauth2/token', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: requestData
-        }).access_token
-        .then(response => response.json())
+  const requestData = new URLSearchParams({
+    grant_type: 'client_credentials',
+    scope: 'open-api',
+    client_secret: 'BECPXqrRLqS2TmIbMSTeypvCYJUbVnVVXJSuiPUdaWNJQsPA3H6wLPbxyfeYvojG',
+    client_id: '0oaakt1lskktHhFav5d7'
+  });
 
-        .then(response => updateToken(response.access_token))
-    } catch (error) {
-        return console.log(error);
+  try {
+    const response = await fetch('https://open-api.guesty.com/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: requestData
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+
+    const data = await response.json();
+    const newToken = data.access_token;
+    console.log(newToken);
+    updateToken(newToken)
+    return newToken;
+  } catch (error) {
+    console.error('Error fetching token:', error);
+    throw error;
+  }
 }
 
 async function updateToken(newToken){
-    await updateDoc(tokenRef, {token: newToken.access_token, date:  dateFormatted(new Date())});
+    await updateDoc(tokenRef, {token: newToken, date:  dateFormatted(new Date())});
 }
 
 
