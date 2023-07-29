@@ -183,6 +183,16 @@ app.post('/api/newReservation', async (req, res) => {
 
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
+
+  function formatDateToYYYYMMDD(inputDate) {
+    const dateComponents = inputDate.split('/');
+    const year = dateComponents[0];
+    const month = dateComponents[1].padStart(2, '0');
+    const day = dateComponents[2].padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
+
   const options = {
     method: 'POST',
     headers: {
@@ -193,8 +203,8 @@ app.post('/api/newReservation', async (req, res) => {
     body: JSON.stringify({
       guest: {firstName: name , lastName, phone: phone, email: email},
       listingId: propertyID,
-      checkInDateLocalized: checkIn,
-      checkOutDateLocalized: checkOut,
+      checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
+      checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
       status: 'confirmed'
     })
   };
