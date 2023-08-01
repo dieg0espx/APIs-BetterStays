@@ -228,6 +228,65 @@ app.post('/api/newReservation', async (req, res) => {
 });
 
 
+
+// =======  RESERVATIONS  ======= //
+
+
+app.post('/api/getBookedDays', async (req, res) => {
+  const { propertyID } = req.body; 
+
+  function formatDate(date) {
+    return new Date(date).toISOString().slice(0, 10);
+  }
+
+  function getDatesBetween(startDate, endDate) {
+    const dates = [];
+    const currentDate = new Date(startDate);
+    const lastDate = new Date(endDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+    while (currentDate < lastDate) { 
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  }
+
+  const token = await getCurrentToken();
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      timeout: '50000',
+      authorization: 'Bearer ' + token
+    }
+  };
+    fetch('https://open-api.guesty.com/v1/reservations?sort=checkIn&limit=100', options)
+    .then(response => response.json())
+    .then(response => {
+      const reservations = response.results;
+     
+      const bookedDates = []
+      const usedDates = []
+      reservations.forEach((reservation, index) => {
+        index ++;
+        if(reservation.listingId == propertyID){
+          bookedDates.push(getDatesBetween(reservation.checkIn, reservation.checkOut));
+        }
+      });
+
+      for(let i = 0; i < bookedDates.length; i ++){
+        for( j = 0; j < bookedDates[i].length; j ++){
+         usedDates.push(formatDate(bookedDates[i][j]));
+        }
+      }
+      res.json(usedDates)
+    })
+});
+
+
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
