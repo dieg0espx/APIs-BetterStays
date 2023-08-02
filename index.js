@@ -232,26 +232,9 @@ app.post('/api/newReservation', async (req, res) => {
 // =======  RESERVATIONS  ======= //
 
 
-app.post('/api/getBookedDays', async (req, res) => {
-  const { propertyID } = req.body; 
-
-  function formatDate(date) {
-    return new Date(date).toISOString().slice(0, 10);
-  }
-
-  function getDatesBetween(startDate, endDate) {
-    const dates = [];
-    const currentDate = new Date(startDate);
-    const lastDate = new Date(endDate);
-    currentDate.setDate(currentDate.getDate() + 1);
-    while (currentDate < lastDate) { 
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dates;
-  }
-
+app.get('/api/getBookedDays', async (req, res) => {
   const token = await getCurrentToken();
+  const listingId = '638a965985cf74003f7b34e6'; 
   const options = {
     method: 'GET',
     headers: {
@@ -260,34 +243,70 @@ app.post('/api/getBookedDays', async (req, res) => {
       authorization: 'Bearer ' + token
     }
   };
-    fetch('https://open-api.guesty.com/v1/reservations?sort=checkIn&limit=100', options)
+
+let myReservations = []
+  fetch(`https://open-api.guesty.com/v1/reservations?&sort=checkIn&limit=100`, options)
     .then(response => response.json())
     .then(response => {
       const reservations = response.results;
-     
-      const bookedDates = []
-      const usedDates = []
-      reservations.forEach((reservation, index) => {
-        index ++;
-        if(reservation.listingId == propertyID){
-          bookedDates.push(getDatesBetween(reservation.checkIn, reservation.checkOut));
+      reservations.forEach((reservation) => {
+        if(reservation.listingId == listingId){
+          // console.log(reservation.checkIn, reservation.checkOut);
+          myReservations.push(reservation.checkIn, reservation.checkOut);
         }
-      });
 
-      for(let i = 0; i < bookedDates.length; i ++){
-        for( j = 0; j < bookedDates[i].length; j ++){
-         usedDates.push(formatDate(bookedDates[i][j]));
-        }
-      }
-      res.json(usedDates)
+      });
+      res.json(myReservations)
     })
+
+    
+   
 });
 
 
 
+
+// =========== DASHBOARD ============== //
+
+app.get("/api/multipleCalendar", async (req,res)=>{
+  const token = await getCurrentToken();
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      authorization: 'Bearer ' + token
+    }
+  };
+  const { start, end } = req.query;
+  fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings?listingIds=' + allIDs + '&startDate=' + start + '&endDate=' + end, options)
+  .then(response => response.json())
+  .then(response => {
+    return res.status(200).json(response);
+  })
+  .catch(err => console.error(err));
+});
+
+
+app.get("/api/getAllCustomers", async (req,res)=>{
+  const token = await getCurrentToken();
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      authorization: 'Bearer ' + token
+    }
+  };
+  fetch('https://open-api.guesty.com/v1/guests-crud?columns=fullName%20guestEmail%20guestPhone', options)
+  .then(response => response.json())
+  .then(response => {
+    return res.status(200).json(response);
+  })
+  .catch(err => console.error(err));
+});
 
 
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+// 627c1f19b8ff0000368578ce
