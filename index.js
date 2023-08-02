@@ -92,7 +92,8 @@ async function updateToken(newToken){
 }
 
 
-// Define a sample route
+// =========== APIs - WEBSITE =========== //
+
 app.get('/api/getCurrentToken', async (req, res) => {
     const token = await getCurrentToken();
     res.json(token);
@@ -177,7 +178,6 @@ app.post('/api/getTaxes', async (req, res) => {
     .then(response => response.json())
     .then(response=> res.json(response))
 });
-
 app.post('/api/newReservation', async (req, res) => {
   const token = await getCurrentToken();
 
@@ -228,45 +228,7 @@ app.post('/api/newReservation', async (req, res) => {
 });
 
 
-
-// =======  RESERVATIONS  ======= //
-
-
-app.get('/api/getBookedDays', async (req, res) => {
-  const token = await getCurrentToken();
-  const listingId = '638a965985cf74003f7b34e6'; 
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      timeout: '50000',
-      authorization: 'Bearer ' + token
-    }
-  };
-
-let myReservations = []
-  fetch(`https://open-api.guesty.com/v1/reservations?&sort=checkIn&limit=100`, options)
-    .then(response => response.json())
-    .then(response => {
-      const reservations = response.results;
-      reservations.forEach((reservation) => {
-        if(reservation.listingId == listingId){
-          // console.log(reservation.checkIn, reservation.checkOut);
-          myReservations.push(reservation.checkIn, reservation.checkOut);
-        }
-
-      });
-      res.json(myReservations)
-    })
-
-    
-   
-});
-
-
-
-
-// =========== DASHBOARD ============== //
+// =========== APIs - DASHBOARD =========== //
 
 app.get("/api/multipleCalendar", async (req,res)=>{
   const token = await getCurrentToken();
@@ -285,8 +247,6 @@ app.get("/api/multipleCalendar", async (req,res)=>{
   })
   .catch(err => console.error(err));
 });
-
-
 app.get("/api/getAllCustomers", async (req,res)=>{
   const token = await getCurrentToken();
   const options = {
@@ -305,8 +265,20 @@ app.get("/api/getAllCustomers", async (req,res)=>{
 });
 
 
-// Start the server
+
+
+
+
+
+
+
+
+
+// CONFIG - LOCAL SERVER
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+
 // 627c1f19b8ff0000368578ce
