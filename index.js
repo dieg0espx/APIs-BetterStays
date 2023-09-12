@@ -183,7 +183,6 @@ app.post('/api/newReservation', async (req, res) => {
 
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
-
   function formatDateToYYYYMMDD(inputDate) {
     const dateComponents = inputDate.split('/');
     const year = dateComponents[0];
@@ -201,7 +200,7 @@ app.post('/api/newReservation', async (req, res) => {
       authorization: 'Bearer ' + token
     },
     body: JSON.stringify({
-      guest: {firstName: name , lastName, phone: phone, email: email},
+      guest: {firstName:name, lastName:lastName, phone:phone, email:email},
       listingId: propertyID,
       checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
       checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
