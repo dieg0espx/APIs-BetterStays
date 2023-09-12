@@ -223,6 +223,7 @@ app.post('/api/newReservation', async (req, res) => {
       .then(response => {
         fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
       })
+      .then(response => res.json("Reservation Completed !" + response))
       .catch(err => console.error(err));
 });
 
