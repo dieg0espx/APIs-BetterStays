@@ -241,7 +241,9 @@ app.post('/api/newReservation', async (req, res) => {
 
 
 app.post("/api/login", async (req, res) => {
-  const user = getUsers(req.body.username)
+  // const user = getUsers(req.body.username)
+
+  res.json(req.body.username)
   if (!user) {
     res.status(404).json({ message: "USER NOT FOUND :(" });
   } else {
