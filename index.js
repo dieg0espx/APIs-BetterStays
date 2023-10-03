@@ -235,23 +235,8 @@ app.post('/api/newReservation', async (req, res) => {
       .then(response => res.json("Reservation Completed !" + response))
       .catch(err => console.error(err));
 });
-
-
-
 app.post("/api/login", async (req, res) => {
-  
-
-  // res.json(req.body.username)
-  // if (!user) {
-  //   res.status(404).json({ message: "USER NOT FOUND :(" });
-  // } else {
-  //   res.status(200).json({messaje: "FOUND !"});
-  // }
-
-  
-  console.log(await userExists(req.body.username));
-
-
+  res.json(await userExists(req.body.username));
 });
 
 
