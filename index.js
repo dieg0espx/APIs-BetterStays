@@ -1,5 +1,5 @@
 const { initializeApp } = require("firebase/app");
-const { getFirestore, doc, getDoc, updateDoc } = require("firebase/firestore");
+const { getFirestore, doc, getDoc, getDocs, updateDoc, collection } = require("firebase/firestore");
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -90,7 +90,18 @@ async function getNewToken(){
 async function updateToken(newToken){
     await updateDoc(tokenRef, {token: newToken, date:  dateFormatted(new Date())});
 }
-
+async function getUsers(username){
+  console.log("SOY LA FUNCION " + username);
+  const querySnapshot = await getDocs(collection(db, "Users"));
+  querySnapshot.forEach((doc) => {
+    if(doc.data().email == username){
+      console.log("USER FOUND" + username + ' = ' + doc.data().email);
+      return true
+    }
+  });
+  return false
+  
+}
 
 // =========== APIs - WEBSITE =========== //
 
@@ -225,6 +236,17 @@ app.post('/api/newReservation', async (req, res) => {
       })
       .then(response => res.json("Reservation Completed !" + response))
       .catch(err => console.error(err));
+});
+
+
+
+app.post("/api/login", async (req, res) => {
+  const user = getUsers(req.body.username)
+  if (!user) {
+    res.status(404).json({ message: "USER NOT FOUND :(" });
+  } else {
+    res.status(200).json({messaje: "FOUND !"});
+  }
 });
 
 
