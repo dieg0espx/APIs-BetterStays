@@ -3,8 +3,14 @@ const { getFirestore, doc, getDoc, getDocs, updateDoc, collection } = require("f
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const port = 4000;
+
+const saltRounds = 10; // Number of salt rounds for hashing
+const plainTextPassword = 'myPassword';
+
 
 //  ============== FIREBASE CONFIG ============== //
 const firebaseConfig = {
@@ -90,14 +96,16 @@ async function getNewToken(){
 async function updateToken(newToken){
     await updateDoc(tokenRef, {token: newToken, date:  dateFormatted(new Date())});
 }
+
+
 async function userExists(username) {
   const querySnapshot = await getDocs(collection(db, "Users"));
-  for (const doc of querySnapshot.docs) {
-    if (doc.data().email === username) {
-      return true;
+  for (const userDoc of querySnapshot.docs) {
+    if (userDoc.data().email === username) {
+      return userDoc.data().token; // Successfully hashed and updated
     }
   }
-  return false;
+  return false; // User with the given email not found
 }
 
 
