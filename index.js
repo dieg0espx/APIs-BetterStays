@@ -197,6 +197,7 @@ app.post('/api/getTaxes', async (req, res) => {
 });
 app.post('/api/newReservation', async (req, res) => {
   const token = await getCurrentToken();
+  let reservationID = '';
 
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
@@ -238,9 +239,10 @@ app.post('/api/newReservation', async (req, res) => {
   fetch('https://open-api.guesty.com/v1/reservations', options)
       .then(response => response.json())
       .then(response => {
+        reservationID =  response.id;
         fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
       })
-      .then(response => res.json("Reservation Completed !" + response))
+      .then(res.json(reservationID))
       .catch(err => console.error(err));
 });
 app.post("/api/login", async (req, res) => {
