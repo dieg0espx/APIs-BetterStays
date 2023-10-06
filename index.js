@@ -239,10 +239,9 @@ app.post('/api/newReservation', async (req, res) => {
   fetch('https://open-api.guesty.com/v1/reservations', options)
       .then(response => response.json())
       .then(response => {
-        reservationID =  response.id;
         fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
       })
-      .then(res.json(reservationID))
+      .then(res.json(response.id))
       .catch(err => console.error(err));
 });
 app.post("/api/login", async (req, res) => {
