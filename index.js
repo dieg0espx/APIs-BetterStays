@@ -303,7 +303,7 @@ app.get("/api/getAllCustomers", async (req,res)=>{
   })
   .catch(err => console.error(err));
 });
-app.post('/api/getReservationPerProperty', async (req, res) => {
+app.post('/api/getReservationsPerProperty', async (req, res) => {
   const token = await getCurrentToken();
   let { propertyID, startDate, endDate} = req.body;
 
