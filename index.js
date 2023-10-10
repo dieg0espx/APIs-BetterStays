@@ -278,7 +278,6 @@ app.get("/api/multipleCalendar", async (req,res)=>{
     i > 0 ? allIDs += "," + propertiesID[i].id : allIDs = propertiesID[i].id
   }
 
-
   const { start, end } = req.query;
   fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings?listingIds=' + allIDs + '&startDate=' + start + '&endDate=' + end, options)
   .then(response => response.json())
@@ -303,26 +302,6 @@ app.get("/api/getAllCustomers", async (req,res)=>{
   })
   .catch(err => console.error(err));
 });
-app.post('/api/getReservationsPerProperty', async (req, res) => {
-  const token = await getCurrentToken();
-  let { propertyID, startDate, endDate} = req.body;
-
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      timeout: '50000',
-      authorization: 'Bearer ' + token
-    }
-  };
-
-  fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings?listingIds=' + propertyID + '&startDate=' +  startDate +  '&endDate=' + endDate, options)
-    .then(response => response.json())
-    .then(response=> res.json(response))
-});
-
-
-
 
 
 
