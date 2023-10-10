@@ -248,23 +248,7 @@ app.post('/api/newReservation', async (req, res) => {
 app.post("/api/login", async (req, res) => {
   res.json(await userExists(req.body.username));
 });
-app.post('/api/getReservationPerProperty', async (req, res) => {
-  const token = await getCurrentToken();
-  let { propertyID, startDate, endDate} = req.body;
 
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      timeout: '50000',
-      authorization: 'Bearer ' + token
-    }
-  };
-
-  fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings?listingIds=' + propertyID + '&startDate=' +  startDate +  '&endDate=' + endDate, options)
-    .then(response => response.json())
-    .then(response=> res.json(response))
-});
 
 
 // =========== APIs - DASHBOARD =========== //
@@ -318,6 +302,23 @@ app.get("/api/getAllCustomers", async (req,res)=>{
     return res.status(200).json(response);
   })
   .catch(err => console.error(err));
+});
+app.post('/api/getReservationPerProperty', async (req, res) => {
+  const token = await getCurrentToken();
+  let { propertyID, startDate, endDate} = req.body;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      timeout: '50000',
+      authorization: 'Bearer ' + token
+    }
+  };
+
+  fetch('https://open-api.guesty.com/v1/availability-pricing/api/calendar/listings?listingIds=' + propertyID + '&startDate=' +  startDate +  '&endDate=' + endDate, options)
+    .then(response => response.json())
+    .then(response=> res.json(response))
 });
 
 
