@@ -23,6 +23,13 @@ const db = getFirestore(firebaseApp);
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
+const corsOptions = {
+  origin: 'https://www.betterstaynow.com', // Replace this with your website's URL
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
+
 
 const tokenRef = doc(db, "token", "token");
 
@@ -265,6 +272,7 @@ app.get("/api/multipleCalendar", async (req,res)=>{
     {name: "Landstrom",          id:"627c1f19b8ff0000368578ce"},
     {name: "Tuneberg",           id:"627c1f09c01e3a00346b803b"},
     {name: "Mario's Pad",        id:"6435af6b4613d0003623178c"},
+    {name: "spidey",             id:"653d8f299c1bb10033a5f249"},
   ]
   let allIDs = '';
   for (let i = 0; i < propertiesID.length; i++) {
@@ -295,6 +303,10 @@ app.get("/api/getAllCustomers", async (req,res)=>{
   })
   .catch(err => console.error(err));
 });
+
+
+// =========== APIs - DASHBOARD  BETTER EVENTS =========== //
+
 
 
 
