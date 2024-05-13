@@ -23,12 +23,6 @@ const db = getFirestore(firebaseApp);
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
-const corsOptions = {
-  origin: 'https://www.betterstaynow.com', // Replace this with your website's URL
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
-app.use(cors(corsOptions));
 
 
 const tokenRef = doc(db, "token", "token");
