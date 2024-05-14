@@ -23,6 +23,8 @@ const db = getFirestore(firebaseApp);
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.json()); // Middleware to parse JSON bodies
+
 
 
 const tokenRef = doc(db, "token", "token");
@@ -231,14 +233,41 @@ app.post('/api/newReservation', async (req, res) => {
     body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
   };
 
-  fetch('https://open-api.guesty.com/v1/reservations', options)
-      .then(response => response.json())
-      .then(response => {
-        res.json(response.id)
-        fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
-      })
-      .catch(err => console.error(err));
+  // fetch('https://open-api.guesty.com/v1/reservations', options)
+  //     .then(response => response.json())
+  //     .then(response => {
+  //       res.json(response.id)
+  //       fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
+  //     })
+  //     .catch(err => console.error(err));
+
+  try {
+    const response = await fetch('https://open-api.guesty.com/v1/reservations', options);
+    const data = await response.json();
+    const id = data.id;
+
+    // Send JSON response to the client
+    res.json({ id });
+
+    // Then, send another request
+    await fetch(`https://open-api.guesty.com/v1/reservations/${id}/payments`, options2);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred' });
+  }
+
+
+
+
+
 });
+
+
+
+
+
+
+
 app.post("/api/login", async (req, res) => {
   res.json(await userExists(req.body.username));
 });
