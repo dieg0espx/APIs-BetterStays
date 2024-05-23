@@ -253,6 +253,15 @@ app.post('/api/newReservation', async (req, res) => {
 
   const axios = require('axios');
 
+  function formatDateToYYYYMMDD(inputDate) {
+    const dateComponents = inputDate.split('/');
+    const year = dateComponents[0];
+    const month = dateComponents[1].padStart(2, '0');
+    const day = dateComponents[2].padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }
+
   const options = {
     method: 'POST',
     url: 'https://open-api.guesty.com/v1/reservations',
@@ -263,8 +272,8 @@ app.post('/api/newReservation', async (req, res) => {
     },
     data: {
       listingId: propertyID,
-      checkInDateLocalized: checkIn,
-      checkOutDateLocalized: checkOut,
+      checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
+      checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
       status: 'confirmed',
       guest: {
         firstName: name,
