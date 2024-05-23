@@ -52,7 +52,7 @@ async function getCurrentToken(){
           if(date !== todayte){
             return getNewToken(); 
           }
-          console.log("Current Token:" + token);
+          // console.log("Current Token:" + token);
           return token
         }
     } catch (error) {
