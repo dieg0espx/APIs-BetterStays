@@ -248,7 +248,7 @@ app.post('/api/getTaxes', async (req, res) => {
 
 app.post('/api/newReservation', async (req, res) => {
   console.log('=== BOOKING API === ');
-  const token = 'eyJraWQiOiJMOEZfbWNhY1hHZGR0RncxcGQyamctRFRRRUlrSE1ab2VmemVqMjk0bTdBIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm5aNVVaY2VGeVhvOWhRdWhfelFIUnAwOFVHTkxENEhLWjNOZVNCSFl0MGsiLCJpc3MiOiJodHRwczovL2xvZ2luLmd1ZXN0eS5jb20vb2F1dGgyL2F1czFwOHFyaDUzQ2NRVEk5NWQ3IiwiYXVkIjoiaHR0cHM6Ly9vcGVuLWFwaS5ndWVzdHkuY29tIiwiaWF0IjoxNzE2NDI5Mjg1LCJleHAiOjE3MTY1MTU2ODUsImNpZCI6IjBvYWFrdDFsc2trdEhoRmF2NWQ3Iiwic2NwIjpbIm9wZW4tYXBpIl0sInJlcXVlc3RlciI6IkVYVEVSTkFMIiwiYWNjb3VudElkIjoiNjI0MjdlOGU1MDI4ODQwMDMxMDFkZjEwIiwic3ViIjoiMG9hYWt0MWxza2t0SGhGYXY1ZDciLCJ1c2VyUm9sZXMiOlt7InJvbGVJZCI6eyJwZXJtaXNzaW9ucyI6WyJhZG1pbiJdfX1dLCJyb2xlIjoidXNlciIsImNsaWVudFR5cGUiOiJvcGVuYXBpIiwiaWFtIjoidjMiLCJhY2NvdW50TmFtZSI6IkJldHRlciBTdGF5cyIsIm5hbWUiOiJuZXdUb2tlbiJ9.h4GDgfWE8p5y3OX5Y4YMKl0fUHd4ueag-dGGReQdvXzREoJZpZcYnCI-YPv8pXEXqlwxdrFOtfKs6TsgHkXMuDZ7JsukKGqLQSsqD1ds4UPjsJIbvlWeoEGHKeNdTIPCazSbHZUUS_1rNRBtypABuuAWrEYWEmBKt3mMphQpE4FuIZse9PMiGP_xCEO_sSdtUCuhdbvtuDmO6gPSCxAlQ7s5gXni4BH076aYrWu6krLIRMhJii992T46dKM7As1SzowA8QdD1ZRkOjyS_lzbmNqFqAyoscp7K20SXPcv_L24dT64w9EHuxIzJsfKwv7XXyIDX9s9dDYTPu1j8BLUvw'
+  const token = await getCurrentToken();
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
   const axios = require('axios');
@@ -289,7 +289,7 @@ app.post('/api/newReservation', async (req, res) => {
         headers: {
           accept: 'application/json',
           'content-type': 'application/json',
-          authorization: 'Bearer eyJraWQiOiJMOEZfbWNhY1hHZGR0RncxcGQyamctRFRRRUlrSE1ab2VmemVqMjk0bTdBIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm5aNVVaY2VGeVhvOWhRdWhfelFIUnAwOFVHTkxENEhLWjNOZVNCSFl0MGsiLCJpc3MiOiJodHRwczovL2xvZ2luLmd1ZXN0eS5jb20vb2F1dGgyL2F1czFwOHFyaDUzQ2NRVEk5NWQ3IiwiYXVkIjoiaHR0cHM6Ly9vcGVuLWFwaS5ndWVzdHkuY29tIiwiaWF0IjoxNzE2NDI5Mjg1LCJleHAiOjE3MTY1MTU2ODUsImNpZCI6IjBvYWFrdDFsc2trdEhoRmF2NWQ3Iiwic2NwIjpbIm9wZW4tYXBpIl0sInJlcXVlc3RlciI6IkVYVEVSTkFMIiwiYWNjb3VudElkIjoiNjI0MjdlOGU1MDI4ODQwMDMxMDFkZjEwIiwic3ViIjoiMG9hYWt0MWxza2t0SGhGYXY1ZDciLCJ1c2VyUm9sZXMiOlt7InJvbGVJZCI6eyJwZXJtaXNzaW9ucyI6WyJhZG1pbiJdfX1dLCJyb2xlIjoidXNlciIsImNsaWVudFR5cGUiOiJvcGVuYXBpIiwiaWFtIjoidjMiLCJhY2NvdW50TmFtZSI6IkJldHRlciBTdGF5cyIsIm5hbWUiOiJuZXdUb2tlbiJ9.h4GDgfWE8p5y3OX5Y4YMKl0fUHd4ueag-dGGReQdvXzREoJZpZcYnCI-YPv8pXEXqlwxdrFOtfKs6TsgHkXMuDZ7JsukKGqLQSsqD1ds4UPjsJIbvlWeoEGHKeNdTIPCazSbHZUUS_1rNRBtypABuuAWrEYWEmBKt3mMphQpE4FuIZse9PMiGP_xCEO_sSdtUCuhdbvtuDmO6gPSCxAlQ7s5gXni4BH076aYrWu6krLIRMhJii992T46dKM7As1SzowA8QdD1ZRkOjyS_lzbmNqFqAyoscp7K20SXPcv_L24dT64w9EHuxIzJsfKwv7XXyIDX9s9dDYTPu1j8BLUvw'
+          authorization: 'Bearer ' + token
         },
         data: {paymentMethod: {method: 'CASH'}, amount: paid}
       };
@@ -298,14 +298,11 @@ app.post('/api/newReservation', async (req, res) => {
         .request(options2)
         .then(function (response) {
           console.log(response.data);
-          res.status(200).json("DONE")
+          res.status(200).json(reservationID)
         })
         .catch(function (error) {
           console.error(error);
         });
-
-
-
     })
     .catch(function (error) {
       console.error(error);
