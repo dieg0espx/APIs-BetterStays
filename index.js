@@ -24,6 +24,7 @@ const app = express();
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.json()); // Middleware to parse JSON bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
@@ -51,6 +52,7 @@ async function getCurrentToken(){
           if(date !== todayte){
             return getNewToken(); 
           }
+          console.log("Current Token:" + token);
           return token
         }
     } catch (error) {
@@ -192,75 +194,135 @@ app.post('/api/getTaxes', async (req, res) => {
     .then(response => response.json())
     .then(response=> res.json(response))
 });
-app.post('/api/newReservation', async (req, res) => {
-  const token = await getCurrentToken();
-  let reservationID = '';
+// app.post('/api/newReservation', async (req, res) => {
+//   const token = await getCurrentToken();
+//   let reservationID = '';
 
+//   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
+
+//   function formatDateToYYYYMMDD(inputDate) {
+//     const dateComponents = inputDate.split('/');
+//     const year = dateComponents[0];
+//     const month = dateComponents[1].padStart(2, '0');
+//     const day = dateComponents[2].padStart(2, '0');
+  
+//     return `${year}-${month}-${day}`;
+//   }
+
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       accept: 'application/json',
+//       'content-type': 'application/json',
+//       authorization: 'Bearer ' + token
+//     },
+//     body: JSON.stringify({
+//       guest: {firstName:name, lastName:lastName, phone:phone, email:email},
+//       listingId: propertyID,
+//       checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
+//       checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
+//       status: 'confirmed'
+//     })
+//   };
+
+//   const options2 = {
+//     method: 'POST',
+//     headers: {
+//       accept: 'application/json',
+//       'content-type': 'application/json',
+//       authorization: 'Bearer ' + token
+//     },
+//     body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
+//   };
+
+//   await fetch('https://open-api.guesty.com/v1/reservations', options)
+//       .then(response => response.json())
+//       .then(response => {
+//         res.json(response.id)
+//         fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
+//       })
+//       .catch(err => console.error(err));
+// });
+
+
+
+app.post('/api/newReservation', async (req, res) => {
+  console.log('=== BOOKING API === ');
+  const token = 'eyJraWQiOiJMOEZfbWNhY1hHZGR0RncxcGQyamctRFRRRUlrSE1ab2VmemVqMjk0bTdBIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm5aNVVaY2VGeVhvOWhRdWhfelFIUnAwOFVHTkxENEhLWjNOZVNCSFl0MGsiLCJpc3MiOiJodHRwczovL2xvZ2luLmd1ZXN0eS5jb20vb2F1dGgyL2F1czFwOHFyaDUzQ2NRVEk5NWQ3IiwiYXVkIjoiaHR0cHM6Ly9vcGVuLWFwaS5ndWVzdHkuY29tIiwiaWF0IjoxNzE2NDI5Mjg1LCJleHAiOjE3MTY1MTU2ODUsImNpZCI6IjBvYWFrdDFsc2trdEhoRmF2NWQ3Iiwic2NwIjpbIm9wZW4tYXBpIl0sInJlcXVlc3RlciI6IkVYVEVSTkFMIiwiYWNjb3VudElkIjoiNjI0MjdlOGU1MDI4ODQwMDMxMDFkZjEwIiwic3ViIjoiMG9hYWt0MWxza2t0SGhGYXY1ZDciLCJ1c2VyUm9sZXMiOlt7InJvbGVJZCI6eyJwZXJtaXNzaW9ucyI6WyJhZG1pbiJdfX1dLCJyb2xlIjoidXNlciIsImNsaWVudFR5cGUiOiJvcGVuYXBpIiwiaWFtIjoidjMiLCJhY2NvdW50TmFtZSI6IkJldHRlciBTdGF5cyIsIm5hbWUiOiJuZXdUb2tlbiJ9.h4GDgfWE8p5y3OX5Y4YMKl0fUHd4ueag-dGGReQdvXzREoJZpZcYnCI-YPv8pXEXqlwxdrFOtfKs6TsgHkXMuDZ7JsukKGqLQSsqD1ds4UPjsJIbvlWeoEGHKeNdTIPCazSbHZUUS_1rNRBtypABuuAWrEYWEmBKt3mMphQpE4FuIZse9PMiGP_xCEO_sSdtUCuhdbvtuDmO6gPSCxAlQ7s5gXni4BH076aYrWu6krLIRMhJii992T46dKM7As1SzowA8QdD1ZRkOjyS_lzbmNqFqAyoscp7K20SXPcv_L24dT64w9EHuxIzJsfKwv7XXyIDX9s9dDYTPu1j8BLUvw'
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
 
-  function formatDateToYYYYMMDD(inputDate) {
-    const dateComponents = inputDate.split('/');
-    const year = dateComponents[0];
-    const month = dateComponents[1].padStart(2, '0');
-    const day = dateComponents[2].padStart(2, '0');
-  
-    return `${year}-${month}-${day}`;
-  }
+  const axios = require('axios');
 
   const options = {
     method: 'POST',
+    url: 'https://open-api.guesty.com/v1/reservations',
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
       authorization: 'Bearer ' + token
     },
-    body: JSON.stringify({
-      guest: {firstName:name, lastName:lastName, phone:phone, email:email},
+    data: {
       listingId: propertyID,
-      checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
-      checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
-      status: 'confirmed'
+      checkInDateLocalized: checkIn,
+      checkOutDateLocalized: checkOut,
+      status: 'confirmed',
+      guest: {
+        firstName: name,
+        lastName: lastName,
+        phone: phone,
+        email: email
+      }
+    }
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data.id);
+      let reservationID;
+      reservationID = response.data.id
+
+      console.log("=== PAYMENT API === ");
+      const options2 = {
+        method: 'POST',
+        url: 'https://open-api.guesty.com/v1/reservations/' + reservationID +'/payments',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          authorization: 'Bearer eyJraWQiOiJMOEZfbWNhY1hHZGR0RncxcGQyamctRFRRRUlrSE1ab2VmemVqMjk0bTdBIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm5aNVVaY2VGeVhvOWhRdWhfelFIUnAwOFVHTkxENEhLWjNOZVNCSFl0MGsiLCJpc3MiOiJodHRwczovL2xvZ2luLmd1ZXN0eS5jb20vb2F1dGgyL2F1czFwOHFyaDUzQ2NRVEk5NWQ3IiwiYXVkIjoiaHR0cHM6Ly9vcGVuLWFwaS5ndWVzdHkuY29tIiwiaWF0IjoxNzE2NDI5Mjg1LCJleHAiOjE3MTY1MTU2ODUsImNpZCI6IjBvYWFrdDFsc2trdEhoRmF2NWQ3Iiwic2NwIjpbIm9wZW4tYXBpIl0sInJlcXVlc3RlciI6IkVYVEVSTkFMIiwiYWNjb3VudElkIjoiNjI0MjdlOGU1MDI4ODQwMDMxMDFkZjEwIiwic3ViIjoiMG9hYWt0MWxza2t0SGhGYXY1ZDciLCJ1c2VyUm9sZXMiOlt7InJvbGVJZCI6eyJwZXJtaXNzaW9ucyI6WyJhZG1pbiJdfX1dLCJyb2xlIjoidXNlciIsImNsaWVudFR5cGUiOiJvcGVuYXBpIiwiaWFtIjoidjMiLCJhY2NvdW50TmFtZSI6IkJldHRlciBTdGF5cyIsIm5hbWUiOiJuZXdUb2tlbiJ9.h4GDgfWE8p5y3OX5Y4YMKl0fUHd4ueag-dGGReQdvXzREoJZpZcYnCI-YPv8pXEXqlwxdrFOtfKs6TsgHkXMuDZ7JsukKGqLQSsqD1ds4UPjsJIbvlWeoEGHKeNdTIPCazSbHZUUS_1rNRBtypABuuAWrEYWEmBKt3mMphQpE4FuIZse9PMiGP_xCEO_sSdtUCuhdbvtuDmO6gPSCxAlQ7s5gXni4BH076aYrWu6krLIRMhJii992T46dKM7As1SzowA8QdD1ZRkOjyS_lzbmNqFqAyoscp7K20SXPcv_L24dT64w9EHuxIzJsfKwv7XXyIDX9s9dDYTPu1j8BLUvw'
+        },
+        data: {paymentMethod: {method: 'CASH'}, amount: paid}
+      };
+      
+      axios
+        .request(options2)
+        .then(function (response) {
+          console.log(response.data);
+          res.status(200).json("DONE")
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+
+
+
     })
-  };
-
-  const options2 = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      authorization: 'Bearer ' + token
-    },
-    body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
-  };
-
-  fetch('https://open-api.guesty.com/v1/reservations', options)
-      .then(response => response.json())
-      .then(response => {
-        res.json(response.id)
-        fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
-      })
-      .catch(err => console.error(err));
-
-  // try {
-  //   const response = await fetch('https://open-api.guesty.com/v1/reservations', options);
-  //   const data = await response.json();
-  //   const id = data.id;
-
-  //   // Send JSON response to the client
-  //   res.json({ id });
-
-  //   // Then, send another request
-  //   await fetch(`https://open-api.guesty.com/v1/reservations/${id}/payments`, options2);
-  // } catch (error) {
-  //   console.error('Error:', error);
-  //   res.status(500).json({ error: 'An error occurred' });
-  // }
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).json(error)
+    });
 
 
 
 
 
-});
+})
+
+
+
+
+
+
 
 
 
