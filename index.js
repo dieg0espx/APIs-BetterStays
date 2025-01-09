@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const port = 4000;
+const port = 4001;
 
 
 //  ============== FIREBASE CONFIG ============== //
@@ -194,55 +194,6 @@ app.post('/api/getTaxes', async (req, res) => {
     .then(response => response.json())
     .then(response=> res.json(response))
 });
-// app.post('/api/newReservation', async (req, res) => {
-//   const token = await getCurrentToken();
-//   let reservationID = '';
-
-//   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
-
-//   function formatDateToYYYYMMDD(inputDate) {
-//     const dateComponents = inputDate.split('/');
-//     const year = dateComponents[0];
-//     const month = dateComponents[1].padStart(2, '0');
-//     const day = dateComponents[2].padStart(2, '0');
-  
-//     return `${year}-${month}-${day}`;
-//   }
-
-//   const options = {
-//     method: 'POST',
-//     headers: {
-//       accept: 'application/json',
-//       'content-type': 'application/json',
-//       authorization: 'Bearer ' + token
-//     },
-//     body: JSON.stringify({
-//       guest: {firstName:name, lastName:lastName, phone:phone, email:email},
-//       listingId: propertyID,
-//       checkInDateLocalized: formatDateToYYYYMMDD(checkIn),
-//       checkOutDateLocalized: formatDateToYYYYMMDD(checkOut),
-//       status: 'confirmed'
-//     })
-//   };
-
-//   const options2 = {
-//     method: 'POST',
-//     headers: {
-//       accept: 'application/json',
-//       'content-type': 'application/json',
-//       authorization: 'Bearer ' + token
-//     },
-//     body: JSON.stringify({paymentMethod: {method: 'CASH'}, amount: paid})
-//   };
-
-//   await fetch('https://open-api.guesty.com/v1/reservations', options)
-//       .then(response => response.json())
-//       .then(response => {
-//         res.json(response.id)
-//         fetch('https://open-api.guesty.com/v1/reservations/'+ response.id +'/payments', options2)
-//       })
-//       .catch(err => console.error(err));
-// });
 
 
 
@@ -250,14 +201,17 @@ app.post('/api/newReservation', async (req, res) => {
   console.log('=== BOOKING API === ');
   const token = await getCurrentToken();
   const { name, lastName, email, phone, checkIn, checkOut, propertyID, paid} = req.body; 
-
+  
+  console.log(req.body);
+  
   const axios = require('axios');
 
   function formatDateToYYYYMMDD(inputDate) {
+    
     const dateComponents = inputDate.split('/');
-    const year = dateComponents[0];
+    const year = dateComponents[2];
     const month = dateComponents[1].padStart(2, '0');
-    const day = dateComponents[2].padStart(2, '0');
+    const day = dateComponents[0].padStart(2, '0');
   
     return `${year}-${month}-${day}`;
   }
@@ -284,44 +238,38 @@ app.post('/api/newReservation', async (req, res) => {
     }
   };
 
-  axios
-    .request(options)
+  axios.request(options)
     .then(function (response) {
       console.log(response.data.id);
-      let reservationID;
-      reservationID = response.data.id
+      let reservationID = response.data.id
+      res.status(200).json(reservationID)
 
-      console.log("=== PAYMENT API === ");
-      const options2 = {
-        method: 'POST',
-        url: 'https://open-api.guesty.com/v1/reservations/' + reservationID +'/payments',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          authorization: 'Bearer ' + token
-        },
-        data: {paymentMethod: {method: 'CASH'}, amount: paid}
-      };
+      // console.log("=== PAYMENT API === ");
+      // const options2 = {
+      //   method: 'POST',
+      //   url: 'https://open-api.guesty.com/v1/reservations/' + reservationID +'/payments',
+      //   headers: {
+      //     accept: 'application/json',
+      //     'content-type': 'application/json',
+      //     authorization: 'Bearer ' + token
+      //   },
+      //   data: {paymentMethod: {method: 'CASH'}, amount: paid}
+      // };
       
-      axios
-        .request(options2)
-        .then(function (response) {
-          console.log(response.data);
-          res.status(200).json(reservationID)
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+      // axios
+      //   .request(options2)
+      //   .then(function (response) {
+      //     console.log(response.data);
+      //     res.status(200).json(reservationID)
+      //   })
+      //   .catch(function (error) {
+      //     console.error(error);
+      //   });
     })
     .catch(function (error) {
       console.error(error);
       res.status(500).json(error)
     });
-
-
-
-
-
 })
 
 
