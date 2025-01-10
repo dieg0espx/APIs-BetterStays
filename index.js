@@ -244,27 +244,27 @@ app.post('/api/newReservation', async (req, res) => {
       let reservationID = response.data.id
       res.status(200).json(reservationID)
 
-      // console.log("=== PAYMENT API === ");
-      // const options2 = {
-      //   method: 'POST',
-      //   url: 'https://open-api.guesty.com/v1/reservations/' + reservationID +'/payments',
-      //   headers: {
-      //     accept: 'application/json',
-      //     'content-type': 'application/json',
-      //     authorization: 'Bearer ' + token
-      //   },
-      //   data: {paymentMethod: {method: 'CASH'}, amount: paid}
-      // };
+      console.log("=== PAYMENT API === ");
+      const options2 = {
+        method: 'POST',
+        url: 'https://open-api.guesty.com/v1/reservations/' + reservationID +'/payments',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          authorization: 'Bearer ' + token
+        },
+        data: {paymentMethod: {method: 'CASH'}, amount: paid - 100}
+      };
       
-      // axios
-      //   .request(options2)
-      //   .then(function (response) {
-      //     console.log(response.data);
-      //     res.status(200).json(reservationID)
-      //   })
-      //   .catch(function (error) {
-      //     console.error(error);
-      //   });
+      axios
+        .request(options2)
+        .then(function (response) {
+          console.log(response.data);
+          res.status(200).json(reservationID)
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
     })
     .catch(function (error) {
       console.error(error);
